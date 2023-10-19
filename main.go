@@ -1,7 +1,7 @@
 package main
 
 import (
-	usercontroller "FP3-Hacktiv8/controller"
+	controller "FP3-Hacktiv8/controller"
 	db "FP3-Hacktiv8/infra/database"
 	"FP3-Hacktiv8/middleware"
 
@@ -12,11 +12,16 @@ func main() {
 	r := gin.Default()
 	db.ConnDB()
 
-	r.POST("/users/register", usercontroller.Register)
-	r.POST("/users/login", usercontroller.Login)
 	r.Use(middleware.RequiredAuth())
-	r.PUT("/users/update-account", middleware.RequiredAuth(), usercontroller.Update)
-	r.DELETE("/users/delete-account", middleware.RequiredAuth(), usercontroller.Delete)
+
+	r.POST("/users/register", controller.RegisterUser)
+	r.POST("/users/login", controller.LoginUser)
+	r.PUT("/users/update-account", middleware.RequiredAuth(), controller.UpdateUser)
+	r.DELETE("/users/delete-account", middleware.RequiredAuth(), controller.DeleteUser)
+
+	r.Use(middleware.CreateCategoryAuthorization())
+
+	r.POST("/categories", middleware.CreateCategoryAuthorization(), controller.Create)
 
 	r.Run(":8080")
 }
