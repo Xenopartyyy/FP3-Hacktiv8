@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Register(c *gin.Context) {
+func RegisterUser(c *gin.Context) {
 	var user model.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -38,16 +38,16 @@ func Register(c *gin.Context) {
 	}
 
 	userdto := dto.User{
-		ID:         user.ID,
-		Full_name:  user.Full_name,
-		Email:      user.Email,
-		Created_at: user.CreatedAt,
+		ID:        user.ID,
+		Full_name: user.Full_name,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
 	}
 
 	c.JSON(http.StatusCreated, userdto)
 }
 
-func Login(c *gin.Context) {
+func LoginUser(c *gin.Context) {
 
 	var body struct {
 		Email    string
@@ -68,7 +68,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	signedToken, err := middleware.GenerateToken(user.ID, user.Email)
+	signedToken, err := middleware.GenerateToken(user.ID, user.Email, user.Role)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "Incorrect email or password"})
 		return
@@ -79,7 +79,7 @@ func Login(c *gin.Context) {
 	})
 }
 
-func Update(c *gin.Context) {
+func UpdateUser(c *gin.Context) {
 	userData, _ := c.Get("userData")
 	userClaim, ok := userData.(jwt.MapClaims)
 
@@ -103,16 +103,16 @@ func Update(c *gin.Context) {
 	}
 
 	userdto := dto.User{
-		ID:         userID,
-		Full_name:  user.Full_name,
-		Email:      user.Email,
-		Created_at: user.UpdatedAt,
+		ID:        userID,
+		Full_name: user.Full_name,
+		Email:     user.Email,
+		CreatedAt: user.UpdatedAt,
 	}
 
 	c.JSON(http.StatusOK, userdto)
 }
 
-func Delete(c *gin.Context) {
+func DeleteUser(c *gin.Context) {
 	userData, _ := c.Get("userData")
 	userClaim, ok := userData.(jwt.MapClaims)
 
