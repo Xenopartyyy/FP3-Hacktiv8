@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func CreateCategoryAuthorization() gin.HandlerFunc {
+func AdminAuthorization() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userData, _ := c.Get("userData")
 		userClaim, ok := userData.(jwt.MapClaims)
