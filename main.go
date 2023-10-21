@@ -29,6 +29,7 @@ func main() {
 	r.POST("/tasks", middleware.Authentication(), controller.CreateTask)
 	r.PUT("/tasks/:taskID", middleware.Authentication(), controller.PutPatchTask)
 	r.PATCH("/tasks/:taskID", middleware.Authentication(), controller.PutPatchTask)
+	r.DELETE("/tasks/:taskID", middleware.Authentication(), controller.DeleteTask)
 
 	r.Run(":8080")
 }

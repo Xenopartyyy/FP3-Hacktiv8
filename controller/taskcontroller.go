@@ -113,3 +113,33 @@ func PutPatchTask(c *gin.Context) {
 	c.JSON(http.StatusOK, taskdto)
 
 }
+
+func DeleteTask(c *gin.Context) {
+	var task model.Task
+	userID := GetIdToken(c)
+
+	taskID, err := strconv.Atoi(c.Param("taskID"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "invalid taskID"})
+		return
+	}
+
+	if err := db.DB.Where("id = ?", taskID).Find(&task).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Taskid not found"})
+		return
+	}
+
+	if userID != task.UserID {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "this task not belong to you"})
+		return
+	}
+
+	if err := db.DB.Delete(&task, taskID).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to delete task"})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Task has been succesfully deleted",
+	})
+
+}
