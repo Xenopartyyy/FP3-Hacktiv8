@@ -22,6 +22,41 @@ func GetIdToken(c *gin.Context) uint {
 	return userID
 }
 
+func GetAllTask(c *gin.Context) {
+	var tasks []model.Task
+	err := db.DB.Preload("User").Find(&tasks).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var allTasks []dto.GetTask
+
+	for _, data := range tasks {
+
+		task := dto.GetTask{
+			ID:          data.ID,
+			Title:       data.Title,
+			Status:      data.Status,
+			Description: data.Description,
+			UserID:      data.UserID,
+			CategoryID:  data.CategoryID,
+			CreatedAt:   data.CreatedAt,
+			User: []dto.GetUserTask{
+				{
+					ID:        data.User.ID,
+					Email:     data.User.Email,
+					Full_name: data.User.Full_name,
+				},
+			},
+		}
+
+		allTasks = append(allTasks, task)
+	}
+
+	c.JSON(http.StatusOK, allTasks)
+}
+
 func CreateTask(c *gin.Context) {
 	var (
 		task     model.Task
@@ -67,6 +102,7 @@ func CreateTask(c *gin.Context) {
 
 func PutPatchTask(c *gin.Context) {
 	var task model.Task
+	var category model.Category
 
 	userID := GetIdToken(c)
 
@@ -86,7 +122,7 @@ func PutPatchTask(c *gin.Context) {
 	}
 
 	if task.UserID != userID {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "this task not belong to you"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "This task does not belong to you"})
 		return
 	}
 
@@ -95,8 +131,17 @@ func PutPatchTask(c *gin.Context) {
 		return
 	}
 
+	if err := db.DB.First(&category, task.CategoryID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Category not found"})
+			return
+		}
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve Category"})
+		return
+	}
+
 	if db.DB.Model(&task).Where("id = ?", taskID).Updates(&task).RowsAffected == 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Failed to update category"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Failed to update task"})
 		return
 	}
 
@@ -111,7 +156,6 @@ func PutPatchTask(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, taskdto)
-
 }
 
 func DeleteTask(c *gin.Context) {
