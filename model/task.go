@@ -13,4 +13,6 @@ type Task struct {
 	CategoryID  uint   `json:"category_id"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	User        User     `gorm:"foreignKey:UserID"`
+	Category    Category `gorm:"foreignKey:CategoryID"`
 }
