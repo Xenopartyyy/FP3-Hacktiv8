@@ -12,23 +12,24 @@ func main() {
 	r := gin.Default()
 	db.ConnDB()
 
-	// r.Use(middleware.Authentication())
-
+	//Users
 	r.POST("/users/register", controller.RegisterUser)
 	r.POST("/users/login", controller.LoginUser)
 	r.PUT("/users/update-account", middleware.Authentication(), controller.UpdateUser)
 	r.DELETE("/users/delete-account", middleware.Authentication(), controller.DeleteUser)
 
-	// r.Use(middleware.Authorization())
-
-	// r.GET("/categories", controller.GetCategory)
+	//Categories
+	r.GET("/categories", controller.GetAllCategory)
 	r.POST("/categories", middleware.Authentication(), middleware.AdminAuthorization(), controller.CreateCategory)
 	r.PATCH("/categories/:categoryID", middleware.Authentication(), middleware.AdminAuthorization(), controller.PatchCategory)
 	r.DELETE("/categories/:categoryID", middleware.Authentication(), middleware.AdminAuthorization(), controller.DeleteCategory)
 
+	//Tasks
+	r.GET("/tasks", middleware.Authentication(), controller.GetAllTask)
 	r.POST("/tasks", middleware.Authentication(), controller.CreateTask)
 	r.PUT("/tasks/:taskID", middleware.Authentication(), controller.PutPatchTask)
-	r.PATCH("/tasks/:taskID", middleware.Authentication(), controller.PutPatchTask)
+	r.PATCH("/tasks/update-status/:taskID", middleware.Authentication(), controller.PutPatchTask)
+	r.PATCH("/tasks/update-category/:taskID", middleware.Authentication(), controller.PutPatchTask)
 	r.DELETE("/tasks/:taskID", middleware.Authentication(), controller.DeleteTask)
 
 	r.Run(":8080")
