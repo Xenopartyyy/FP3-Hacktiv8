@@ -32,5 +32,5 @@ func main() {
 	r.PATCH("/tasks/update-category/:taskID", middleware.Authentication(), controller.PutPatchTask)
 	r.DELETE("/tasks/:taskID", middleware.Authentication(), controller.DeleteTask)
 
-	r.Run(":8080")
+	r.Run()
 }
