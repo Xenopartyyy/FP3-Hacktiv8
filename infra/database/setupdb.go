@@ -19,7 +19,7 @@ var err error
 func seedAdmin() {
 	admin := &model.User{
 		Full_name: "superadmin",
-		Email:     "superadmin@hacktiv8.com",
+		Email:     "superadmin@gmail.com",
 		Password:  "superadmin",
 		Role:      "admin",
 	}
