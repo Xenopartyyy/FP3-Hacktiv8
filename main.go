@@ -19,7 +19,7 @@ func main() {
 	r.DELETE("/users/delete-account", middleware.Authentication(), controller.DeleteUser)
 
 	//Categories
-	r.GET("/categories", controller.GetAllCategory)
+	r.GET("/categories", middleware.Authentication(), controller.GetAllCategory)
 	r.POST("/categories", middleware.Authentication(), middleware.AdminAuthorization(), controller.CreateCategory)
 	r.PATCH("/categories/:categoryID", middleware.Authentication(), middleware.AdminAuthorization(), controller.PatchCategory)
 	r.DELETE("/categories/:categoryID", middleware.Authentication(), middleware.AdminAuthorization(), controller.DeleteCategory)
