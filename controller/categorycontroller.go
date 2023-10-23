@@ -32,19 +32,46 @@ func CreateCategory(c *gin.Context) {
 	c.JSON(http.StatusCreated, categorydto)
 }
 
-// func GetCategory(c *gin.Context) {
-// 	var category model.Category
+func GetAllCategory(c *gin.Context) {
+	var categories []model.Category
 
-// 	if err := db.DB.Find(category); err != nil {
-// 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Data doesnt exist!"})
-// 	}
+	err := db.DB.Preload("Task").Find(&categories).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
-// 	response := dto.Category{}
+	var allCategories []dto.GetCategory
 
-// 	for_, category := range err
+	for _, category := range categories {
+		var categoryTasks []dto.GetCategoryTask
 
-// 	c.JSON(http.StatusOK, categorydto)
-// }
+		for _, task := range category.Task {
+			categoryTask := dto.GetCategoryTask{
+				ID:          task.ID,
+				Title:       task.Title,
+				Description: task.Description,
+				UserID:      task.UserID,
+				CategoryID:  task.CategoryID,
+				CreatedAt:   task.CreatedAt,
+				UpdatedAt:   task.UpdatedAt,
+			}
+			categoryTasks = append(categoryTasks, categoryTask)
+		}
+
+		category := dto.GetCategory{
+			ID:        category.ID,
+			Type:      category.Type,
+			UpdatedAt: category.UpdatedAt,
+			CreatedAt: category.CreatedAt,
+			Tasks:     categoryTasks,
+		}
+
+		allCategories = append(allCategories, category)
+	}
+
+	c.JSON(http.StatusOK, allCategories)
+}
 
 func PatchCategory(c *gin.Context) {
 	categoryID, err := strconv.Atoi(c.Param("categoryID"))
