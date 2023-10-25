@@ -17,6 +17,10 @@ type User struct {
 	UpdatedAt time.Time
 }
 
+func (User) TableName() string {
+	return "user"
+}
+
 func (u *User) HashPassword() error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {

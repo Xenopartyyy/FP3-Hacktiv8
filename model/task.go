@@ -16,3 +16,7 @@ type Task struct {
 	User        User     `gorm:"foreignKey:UserID"`
 	Category    Category `gorm:"foreignKey:CategoryID"`
 }
+
+func (Task) TableName() string {
+	return "task"
+}
