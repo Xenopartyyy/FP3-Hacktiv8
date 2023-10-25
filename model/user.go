@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,4 +31,9 @@ func (u *User) HashPassword() error {
 	u.Password = string(hashedPassword)
 
 	return nil
+}
+
+func (c *User) ValidateUser() error {
+	validate := validator.New()
+	return validate.Struct(c)
 }

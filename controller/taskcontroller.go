@@ -68,6 +68,11 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
+	if err := task.ValidateTask(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	task.UserID = GetIdToken(c)
 	categoryID := task.CategoryID
 
@@ -128,6 +133,11 @@ func PutPatchTask(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&task); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	if err := task.ValidateTask(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

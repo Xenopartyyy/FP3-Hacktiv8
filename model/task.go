@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type Task struct {
@@ -19,4 +21,9 @@ type Task struct {
 
 func (Task) TableName() string {
 	return "task"
+}
+
+func (c *Task) ValidateTask() error {
+	validate := validator.New()
+	return validate.Struct(c)
 }

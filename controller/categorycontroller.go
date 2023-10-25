@@ -18,6 +18,11 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
+	if err := category.ValidateCategory(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	if err := db.DB.Create(&category).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to create category"})
 		return
@@ -83,6 +88,11 @@ func PatchCategory(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	if err := category.ValidateCategory(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

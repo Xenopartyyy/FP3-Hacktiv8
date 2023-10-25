@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type Category struct {
@@ -14,4 +16,9 @@ type Category struct {
 
 func (Category) TableName() string {
 	return "category"
+}
+
+func (c *Category) ValidateCategory() error {
+	validate := validator.New()
+	return validate.Struct(c)
 }
