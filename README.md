@@ -5,8 +5,12 @@
 
 Berikut ini adalah final project ke-3 dari hacktiv8, aplikasi ini bernama Kanban Board, Aplikasi ini akan dilengkapi dengan proses CRUD.
 
+## Anggota kelompok
+ - Willyawan Maulana - GLNG-KS07-014
+ - Dirham Triyadi - GLNG-KS07-025
+
 ## Endpoint
-Berikut ini adalah seluruh endpoint yang dapat diakses melalui client
+Berikut ini adalah seluruh endpoint yang dapat diakses melalui client.
 
 ### Users
  
