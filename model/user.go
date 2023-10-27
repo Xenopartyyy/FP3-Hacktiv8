@@ -3,16 +3,15 @@ package model
 import (
 	"time"
 
-	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
 	ID        uint   `gorm:"primaryKey" json:"id"`
-	Full_name string `gorm:"type:varchar(200)" validate:"required"`
-	Email     string `gorm:"type:varchar(100);unique" validate:"required,email"`
-	Password  string `gorm:"type:varchar(200)" validate:"required,min=6"`
-	Role      string `gorm:"type:varchar(10)" validate:"required"`
+	Full_name string `gorm:"type:varchar(200)" valid:"required~Full name cannot be empty"`
+	Email     string `gorm:"type:varchar(100);unique" valid:"required~Email cannot be empty,email~Invalid format for email"`
+	Password  string `gorm:"type:varchar(200)" valid:"required~Password cannot be empty,minstringlength(6)~Password must be more than 6 words"`
+	Role      string `gorm:"type:varchar(10)" valid:"required~Role cannot be empty"`
 	Tasks     []Task
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -31,9 +30,4 @@ func (u *User) HashPassword() error {
 	u.Password = string(hashedPassword)
 
 	return nil
-}
-
-func (c *User) ValidateUser() error {
-	validate := validator.New()
-	return validate.Struct(c)
 }

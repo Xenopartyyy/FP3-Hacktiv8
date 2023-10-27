@@ -4,6 +4,7 @@ import (
 	"FP3-Hacktiv8/dto"
 	db "FP3-Hacktiv8/infra/database"
 	"FP3-Hacktiv8/model"
+	"FP3-Hacktiv8/model/validation"
 	"net/http"
 	"strconv"
 
@@ -18,8 +19,8 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
-	if err := category.ValidateCategory(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := validation.ValidateStruct(category); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -91,8 +92,8 @@ func PatchCategory(c *gin.Context) {
 		return
 	}
 
-	if err := category.ValidateCategory(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := validation.ValidateStruct(category); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

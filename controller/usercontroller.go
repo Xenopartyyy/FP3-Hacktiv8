@@ -5,6 +5,7 @@ import (
 	db "FP3-Hacktiv8/infra/database"
 	"FP3-Hacktiv8/middleware"
 	"FP3-Hacktiv8/model"
+	"FP3-Hacktiv8/model/validation"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,8 +21,10 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	if err := user.ValidateUser(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	user.Role = "member"
+
+	if err := validation.ValidateStruct(user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -29,8 +32,6 @@ func RegisterUser(c *gin.Context) {
 		c.JSON(http.StatusConflict, gin.H{"message": "The email is already in use"})
 		return
 	}
-
-	user.Role = "member"
 
 	if err := user.HashPassword(); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to hash password"})
@@ -102,8 +103,8 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	if err := user.ValidateUser(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := validation.ValidateStruct(user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

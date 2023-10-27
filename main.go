@@ -27,9 +27,9 @@ func main() {
 	//Tasks
 	r.GET("/tasks", middleware.Authentication(), controller.GetAllTask)
 	r.POST("/tasks", middleware.Authentication(), controller.CreateTask)
-	r.PUT("/tasks/:taskID", middleware.Authentication(), controller.PutPatchTask)
-	r.PATCH("/tasks/update-status/:taskID", middleware.Authentication(), controller.PutPatchTask)
-	r.PATCH("/tasks/update-category/:taskID", middleware.Authentication(), controller.PutPatchTask)
+	r.PUT("/tasks/:taskID", middleware.Authentication(), controller.PutTask)
+	r.PATCH("/tasks/update-status/:taskID", middleware.Authentication(), controller.PatchStat)
+	r.PATCH("/tasks/update-category/:taskID", middleware.Authentication(), controller.PatchCatId)
 	r.DELETE("/tasks/:taskID", middleware.Authentication(), controller.DeleteTask)
 
 	r.Run()
