@@ -25,6 +25,43 @@ Berikut ini adalah beberapa endpoint yang dapat diakses untuk tabel Users
 
 ###### Daftar request users
 
+POST Register User
+ ```sh
+{
+    "full_name": "string",
+    "email": "string",
+    "password": "string",
+}
+```
+#
+POST Login User
+ ```sh
+{
+    "email": "string",
+    "password": "string",
+}
+```
+#
+
+PUT User
+
+-Bearer Token <br />
+ ```sh
+{
+    "full_name": "string",
+    "email": "string"
+}
+```
+#
+DELETE User
+
+-Bearer Token
+
+> Note: Untuk method PUT dan DELETE diperlukan autentikasi, sehingga perlu memasukan bearer token terlebih dahulu. Token didapatkan melalui response client saat melakukan login
+#
+
+
+
 ### Categories
 Berikut ini adalah beberapa endpoint yang dapat diakses untuk tabel Categories
 
@@ -37,6 +74,41 @@ Berikut ini adalah beberapa endpoint yang dapat diakses untuk tabel Categories
 
 ###### Daftar request categories
 
+POST Categories
+
+-Bearer Token <br />
+ ```sh
+{
+    "type": "string"
+}
+```
+#
+
+GET Categories 
+
+-Bearer Token <br />
+
+#
+
+PATCH Categories
+
+-Bearer Token <br />
+-Param categoryID <br />
+
+ ```sh
+{
+    "type": "string"
+}
+```
+#
+DELETE Categories
+
+-Bearer Token <br />
+-Param categoryID <br />
+
+> Note: Untuk method POST, PATCH dan DELETE hanya bisa diakses oleh akun dengan role admin serta diperlukan autentikasi, sehingga perlu memasukan bearer token terlebih dahulu. Token didapatkan melalui response client saat melakukan login. Untuk methode PATCH dan DELETE diperlukan parameter Id pada URL
+
+#
 ### Tasks
 Berikut ini adalah beberapa endpoint yang dapat diakses untuk tabel Tasks
 
@@ -49,4 +121,65 @@ Berikut ini adalah beberapa endpoint yang dapat diakses untuk tabel Tasks
 
 ###### Daftar request tasks
 
-> Note: Seluruh method diperlukan autentikasi, sehingga perlu memasukan bearer token terlebih dahulu. Token didapatkan melalui response client saat melakukan login. Untuk methode PUT dan DELETE diperlukan parameter Id pada URL.
+POST Tasks
+
+-Bearer Token <br />
+
+ ```sh
+{
+    "title": "string",
+    "description": "string",
+    "category_id": integer
+}
+```
+#
+
+GET Tasks 
+
+-Bearer Token <br />
+
+#
+
+PUT Tasks
+
+-Bearer Token <br />
+-Param categoryID <br />
+
+ ```sh
+{
+    "title": "string",
+    "description": "string
+}
+```
+
+#
+PATCH Tasks status
+
+-Bearer Token <br />
+-Param categoryID <br />
+
+ ```sh
+{
+    "status": boolean
+}
+```
+#
+
+PATCH Tasks categoryId
+
+-Bearer Token <br />
+-Param categoryID <br />
+
+ ```sh
+{
+    "category_id": integer
+}
+```
+#
+
+DELETE Tasks
+
+-Bearer Token <br />
+-Param categoryID <br />
+
+> Note: Seluruh method diperlukan autentikasi, sehingga perlu memasukan bearer token terlebih dahulu. Token didapatkan melalui response client saat melakukan login. Untuk methode PUT, PATCH dan DELETE diperlukan parameter Id pada URL. User hanya dapat melakukan GET, PUT, PATCH, dan DELETE pada tasks yang dibuat oleh user itu sendiri 
