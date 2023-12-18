@@ -17,6 +17,12 @@ type User struct {
 	UpdatedAt time.Time
 }
 
+type UserUpdate struct {
+	Full_name string `json:"full_name" valid:"required~Full name cannot be empty"`
+	Email     string `json:"email" valid:"required~Email cannot be empty,email~Invalid format for email"`
+	UpdatedAt time.Time
+}
+
 func (User) TableName() string {
 	return "user"
 }

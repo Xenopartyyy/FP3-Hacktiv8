@@ -96,28 +96,37 @@ func UpdateUser(c *gin.Context) {
 
 	userID := uint(userClaim["id"].(float64))
 
-	var user model.User
+	var userUpdate model.UserUpdate
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&userUpdate); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	if err := validation.ValidateStruct(user); err != nil {
+	if err := validation.ValidateStruct(userUpdate); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	if db.DB.Model(&user).Where("id = ?", userID).Updates(&user).RowsAffected == 0 {
+	var user model.User
+	if db.DB.First(&user, userID).RowsAffected == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "User not found"})
+		return
+	}
+
+	user.Full_name = userUpdate.Full_name
+	user.Email = userUpdate.Email
+
+	if db.DB.Save(&user).RowsAffected == 0 {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Failed to update user"})
 		return
 	}
 
-	userdto := dto.User{
+	userdto := dto.UserUpdate{
 		ID:        userID,
-		Full_name: user.Full_name,
-		Email:     user.Email,
-		CreatedAt: user.UpdatedAt,
+		Full_name: userUpdate.Full_name,
+		Email:     userUpdate.Email,
+		UpdatedAt: userUpdate.UpdatedAt,
 	}
 
 	c.JSON(http.StatusOK, userdto)
